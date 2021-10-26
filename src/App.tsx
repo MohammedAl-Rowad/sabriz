@@ -1,26 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Channelbar from './components/ChannelBar'
+import ContentContainer from './components/ContentContainer'
+import SideBar from './components/SideBar'
+// import 'tailwindcss/dist/base.css'
+// import 'tailwindcss/dist/components.css'
+// import 'tailwindcss/dist/utilities.css'
+// import useCreatePeer from './webrtc/useCreatePeer'
+// import usePeerConnect from './webrtc/usePeerConnect'
+// import { useStore } from './store'
+// import SimplePeer from 'simple-peer'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex">
+      <SideBar />
+      <Channelbar />
+      <ContentContainer />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
