@@ -7,6 +7,7 @@ import { AiOutlineDisconnect, AiOutlineClose } from 'react-icons/ai'
 import { DiHtml5Connectivity } from 'react-icons/di'
 import { useStore } from '../../store'
 import SimplePeer from 'simple-peer'
+import useDarkMode from '../../hooks/useDarkMode'
 
 const SideBar = () => {
   const [open, toggleOpen] = useBoolean(false)
@@ -16,6 +17,7 @@ const SideBar = () => {
   const setOffer = useStore((store) => store.setOffer)
   const id = useStore((store) => store.id)
   const textareaRef = useRef()
+  const [enabled] = useDarkMode()
 
   return (
     <div
@@ -32,7 +34,10 @@ const SideBar = () => {
             </div>
           </div>
           <textarea
-            className="appearance-none border-2 dark:bg-gray-900 border-gray-200 rounded w-full py-2 px-4 text-white leading-tight focus:outline-none"
+            className={clsx(
+              'appearance-none border-2 dark:bg-gray-900 border-gray-200 rounded w-full py-2 px-4 leading-tight focus:outline-none',
+              { 'text-white': enabled, 'text-black': !enabled }
+            )}
             placeholder="Paste the offer here"
             rows={20}
             ref={textareaRef as any}
@@ -51,24 +56,27 @@ const SideBar = () => {
                     })
                 peer.signal(JSON.parse(offer))
 
-                peer.on('error', (err) => console.log('error', err))
-                peer.on('signal', (data: any) => {
-                  if (data.renegotiate || data.transceiverRequest) {
-                    return
-                  }
-                  console.log('SIGNAL', JSON.stringify(data))
-                })
+                if (!globalPeer) {
+                  peer.on('error', (err) => console.log('error', err))
+                  peer.on('signal', (data: any) => {
+                    if (data.renegotiate || data.transceiverRequest) {
+                      return
+                    }
+                    console.log('SIGNAL', JSON.stringify(data))
+                  })
 
-                peer.on('connect', () => {
-                  console.log('CONNECT')
-                  setInterval(() => {
-                    peer.send('whatever' + Math.random())
-                  }, 1000)
-                })
+                  peer.on('connect', () => {
+                    console.log('CONNECT')
+                    setInterval(() => {
+                      peer.send('whatever' + Math.random())
+                      // peer.emit('DATA_FROM_PEER', 'whatever' + Math.random())
+                    }, 1000)
+                  })
 
-                peer.on('data', (data) => {
-                  console.log('data: ' + data)
-                })
+                  peer.on('data', (data) => {
+                    console.log('data: ' + data)
+                  })
+                }
               }}
             >
               <DiHtml5Connectivity />
@@ -97,25 +105,14 @@ const SideBar = () => {
               peer.on('connect', () => {
                 console.log('CONNECT')
                 setInterval(() => {
-                  peer.send('whatever' + Math.random())
+                  // peer.emit('DATA_FROM_HOST', '1')
+                  peer.send(`1`)
                 }, 1000)
               })
 
               peer.on('data', (data) => {
                 console.log('data: ' + data)
               })
-              // if (id) {
-              //   // alert('COPIED')
-              //   return
-              // }
-              // const [{ v4 }, copy] = await Promise.all([
-              //   import('uuid'),
-              //   import('copy-to-clipboard'),
-              // ])
-              // const newId = v4()
-              // setId(newId)
-              // copy.default(newId)
-              // alert('COPIED')
             }}
             text={
               id ? 'Click to copy your id' : 'Click here to generate your id'
