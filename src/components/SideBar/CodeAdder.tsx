@@ -1,13 +1,38 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { AiOutlineClose } from 'react-icons/ai'
 import ReactMarkdown from 'react-markdown'
+import { v4 } from 'uuid'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import defaultVal from './defaultMarkDown'
+import { useStore, getDB } from '../../store'
+import { MAIN_COLLECTION } from '../../constants'
+import { RxDatabase, RxDocument } from 'rxdb'
 
 const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
   const [markdown, setMarkDown] = useState(defaultVal)
+  const markDownTextAreaRef = useRef(null)
+  const titleRef = useRef(null)
+  const db: RxDatabase = useStore(getDB) as RxDatabase
+  const onSave = () => {
+    if (markDownTextAreaRef.current && titleRef.current) {
+      console.log(db.collections[MAIN_COLLECTION])
+      db.collections[MAIN_COLLECTION].insert({
+        id: v4(),
+        title: (titleRef.current as any)?.value as any,
+        markdown: (markDownTextAreaRef.current as any)?.value,
+        testCases: [{ input: 'fak', output: 'fak' }],
+      })
+        .then((s) => {
+          return db.collections[MAIN_COLLECTION].findOne(
+            '50125ddf-e412-4277-a46b-f18ea6adb06f'
+          ).exec()
+        })
+        .then(console.log)
+        .catch(console.error)
+    }
+  }
 
   return (
     <div className="w-screen bg-white dark:bg-gray-900 overflow-auto pl-32 pr-32">
@@ -22,6 +47,7 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
       <h2 className="text-3xl dark:text-white">Enter Question Title</h2>
       <section className="border-dashed border-2 border-light-blue-500 h-20 p-1">
         <input
+          ref={titleRef}
           type="text"
           className="w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white"
         />
@@ -30,6 +56,7 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
       <section className="grid grid-cols-2 gap-1">
         <section className="border-dashed border-2 border-light-blue-500  p-1">
           <textarea
+            ref={markDownTextAreaRef}
             value={markdown}
             onChange={({ target: { value } }) => {
               setMarkDown(value)
@@ -84,7 +111,10 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
           />
         </section>
       </section>
-      <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+      <button
+        onClick={onSave}
+        className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+      >
         Save
       </button>
     </div>

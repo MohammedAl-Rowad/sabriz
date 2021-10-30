@@ -5,7 +5,6 @@ import { useStore, codeEditorIsOpen } from '../../store'
 
 const ContentContainer = () => {
   const codeEditorOpen = useStore(codeEditorIsOpen)
-  console.log({ codeEditorOpen })
 
   return (
     <div className="content-container">
