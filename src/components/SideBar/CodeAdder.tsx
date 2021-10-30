@@ -8,9 +8,27 @@ import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import defaultVal from './defaultMarkDown'
 import { useStore, getDB } from '../../store'
 import { MAIN_COLLECTION } from '../../constants'
-import { RxDatabase, RxDocument } from 'rxdb'
+import { RxDatabase } from 'rxdb'
+import { useForm, useFieldArray } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { schema } from './yupCodeAdderSchema'
+import clsx from 'clsx'
 
 const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) })
+
+  const { fields, append } = useFieldArray({
+    control,
+    name: 'testCases',
+  })
+
+  console.log(fields)
+
   const [markdown, setMarkDown] = useState(defaultVal)
   const markDownTextAreaRef = useRef(null)
   const titleRef = useRef(null)
@@ -33,6 +51,10 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
         .catch(console.error)
     }
   }
+  // console.log(errors)
+  const onSubmit = (data: any) => {
+    console.log({data})
+  }
 
   return (
     <div className="w-screen bg-white dark:bg-gray-900 overflow-auto pl-32 pr-32">
@@ -47,7 +69,8 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
       <h2 className="text-3xl dark:text-white">Enter Question Title</h2>
       <section className="border-dashed border-2 border-light-blue-500 h-20 p-1">
         <input
-          ref={titleRef}
+          {...register('title')}
+          // ref={titleRef}
           type="text"
           className="w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white"
         />
@@ -56,7 +79,8 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
       <section className="grid grid-cols-2 gap-1">
         <section className="border-dashed border-2 border-light-blue-500  p-1">
           <textarea
-            ref={markDownTextAreaRef}
+            {...register('markdown')}
+            // ref={markDownTextAreaRef}
             value={markdown}
             onChange={({ target: { value } }) => {
               setMarkDown(value)
@@ -111,8 +135,36 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
           />
         </section>
       </section>
+      {fields.map((field, index) => (
+        <section className="grid grid-cols-2 gap-1 mt-5 mb-5" key={field.id}>
+          <input
+            className={clsx(
+              'w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white',
+              { 'border-red-600': !!errors?.testCases?.[index]?.input }
+            )}
+            {...register(`testCases.${index}.input`)}
+            placeholder="Input"
+          />
+          <input
+            className={clsx(
+              'w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white',
+              { 'border-red-600': !!errors?.testCases?.[index]?.output }
+            )}
+            {...register(`testCases.${index}.output`)}
+            placeholder="Output"
+          />
+        </section>
+      ))}
       <button
-        onClick={onSave}
+        onClick={() => {
+          append({ input: '', output: '' })
+        }}
+        className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+      >
+        Add Input/Output
+      </button>
+      <button
+        onClick={handleSubmit(onSubmit)}
         className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
       >
         Save
