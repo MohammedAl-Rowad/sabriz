@@ -6,8 +6,8 @@ const ContentContainer = () => {
   return (
     <div className="content-container">
       <TopNavigation />
-      <div className="content-list h-screen"></div>
-      <BottomBar />
+      <div className="h-screen"></div>
+      {/* <BottomBar /> */}
     </div>
   )
 }
