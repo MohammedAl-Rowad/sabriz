@@ -1,6 +1,4 @@
-export default `
-
-# Title
+export default `# Title
 
 👉 Changes are re-rendered as you type.
 

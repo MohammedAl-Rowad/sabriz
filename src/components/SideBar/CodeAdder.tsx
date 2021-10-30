@@ -10,7 +10,7 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
   const [markdown, setMarkDown] = useState(defaultVal)
 
   return (
-    <div className="w-screen bg-white dark:bg-gray-900 overflow-auto">
+    <div className="w-screen bg-white dark:bg-gray-900 overflow-auto pl-32 pr-32">
       <div className="flex justify-end mr-5 h-5 mb-2">
         <div
           className="sidebar-icon margin ml-0 mr-0"
@@ -20,7 +20,7 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
         </div>
       </div>
       <h2 className="text-3xl dark:text-white">Enter Question Title</h2>
-      <section className="border-dashed border-4 border-light-blue-500 h-20 p-1">
+      <section className="border-dashed border-2 border-light-blue-500 h-20 p-1">
         <input
           type="text"
           className="w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white"
@@ -28,7 +28,7 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
       </section>
       <h2 className="text-3xl dark:text-white">Enter Question Text</h2>
       <section className="grid grid-cols-2 gap-1">
-        <section className="border-dashed border-4 border-light-blue-500  p-1">
+        <section className="border-dashed border-2 border-light-blue-500  p-1">
           <textarea
             value={markdown}
             onChange={({ target: { value } }) => {
@@ -37,9 +37,9 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
             className="w-full h-full shadow appearance-none border rounded dark:bg-gray-900 dark:text-white"
           />
         </section>
-        <section className="border-dashed border-4 border-light-blue-500 p-1 overflow-auto">
+        <section className="border-dashed border-2 border-light-blue-500 p-1 overflow-auto">
           <ReactMarkdown
-            className="dark:bg-gray-900 dark:text-white"
+            className="dark:bg-gray-900 dark:text-white max-h-screen"
             children={markdown}
             remarkPlugins={[remarkGfm]}
             components={{
