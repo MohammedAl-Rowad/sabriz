@@ -1,12 +1,16 @@
 import TopNavigation from '../TopNavigation'
 import { BsPlusCircleFill } from 'react-icons/bs'
-// import { useState } from 'react';
+import clsx from 'clsx'
+import { useStore, codeEditorIsOpen } from '../../store'
 
 const ContentContainer = () => {
+  const codeEditorOpen = useStore(codeEditorIsOpen)
+  console.log({ codeEditorOpen })
+
   return (
     <div className="content-container">
       <TopNavigation />
-      <div className="h-screen"></div>
+      <div className={clsx({ 'h-screen': !codeEditorOpen })} />
       {/* <BottomBar /> */}
     </div>
   )

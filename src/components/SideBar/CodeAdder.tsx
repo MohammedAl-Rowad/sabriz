@@ -19,14 +19,14 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
           <AiOutlineClose size="28" />
         </div>
       </div>
-      <h2 className="text-3xl">Enter Question Title</h2>
+      <h2 className="text-3xl dark:text-white">Enter Question Title</h2>
       <section className="border-dashed border-4 border-light-blue-500 h-20 p-1">
         <input
           type="text"
-          className="w-full h-full shadow appearance-none border rounded text-5xl"
+          className="w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white"
         />
       </section>
-      <h2 className="text-3xl">Enter Question Text</h2>
+      <h2 className="text-3xl dark:text-white">Enter Question Text</h2>
       <section className="grid grid-cols-2 gap-1">
         <section className="border-dashed border-4 border-light-blue-500  p-1">
           <textarea
@@ -34,11 +34,12 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
             onChange={({ target: { value } }) => {
               setMarkDown(value)
             }}
-            className="w-full h-full shadow appearance-none border rounded"
+            className="w-full h-full shadow appearance-none border rounded dark:bg-gray-900 dark:text-white"
           />
         </section>
         <section className="border-dashed border-4 border-light-blue-500 p-1 overflow-auto">
           <ReactMarkdown
+            className="dark:bg-gray-900 dark:text-white"
             children={markdown}
             remarkPlugins={[remarkGfm]}
             components={{

@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import { FaFingerprint, FaPoo } from 'react-icons/fa'
 import { AiOutlineDisconnect, AiOutlineClose } from 'react-icons/ai'
 import { DiHtml5Connectivity } from 'react-icons/di'
-import { useStore } from '../../store'
+import { useStore, codeEditorFlagToggler } from '../../store'
 import SimplePeer from 'simple-peer'
 import useDarkMode from '../../hooks/useDarkMode'
 import CodeAdder from './CodeAdder'
@@ -14,12 +14,13 @@ const SideBar = () => {
   const [open, toggleOpen] = useBoolean(false)
   const [codeAdderOpen, toogleCodeAdderOpen] = useBoolean(false)
   const [globalPeer, setPeer] = useState(null)
-  const setId = useStore((store) => store.setId)
-  // const setConnectToId = useStore((store) => store.setConnectToId)
-  const setOffer = useStore((store) => store.setOffer)
-  const id = useStore((store) => store.id)
+  const setCodeEditorOpen = useStore(codeEditorFlagToggler)
   const textareaRef = useRef()
   const [enabled] = useDarkMode()
+  const onCodeEditorToggle = () => {
+    toogleCodeAdderOpen()
+    setCodeEditorOpen(!codeAdderOpen)
+  }
 
   return (
     <div
@@ -96,7 +97,7 @@ const SideBar = () => {
         ) : (
           <>
             <SideBarIcon
-              icon={<FaFingerprint size="28" color={id ? 'cyan' : 'inherit'} />}
+              icon={<FaFingerprint size="28" />}
               onClick={async () => {
                 const peer = new SimplePeer({
                   // channelName: id,
@@ -124,9 +125,7 @@ const SideBar = () => {
                   console.log('data: ' + data)
                 })
               }}
-              text={
-                id ? 'Click to copy your id' : 'Click here to generate your id'
-              }
+              text="Click here to generate your id"
             />
             <Divider />
             <SideBarIcon
@@ -136,7 +135,7 @@ const SideBar = () => {
             />
             <SideBarIcon
               icon={<BsCodeSlash size="20" />}
-              onClick={toogleCodeAdderOpen}
+              onClick={onCodeEditorToggle}
               text="Click here to add questions"
             />
             <SideBarIcon icon={<FaPoo size="20" />} />
@@ -148,7 +147,7 @@ const SideBar = () => {
           </>
         )}
       </section>
-      {codeAdderOpen && <CodeAdder toogleCodeAdderOpen={toogleCodeAdderOpen} />}
+      {codeAdderOpen && <CodeAdder toogleCodeAdderOpen={onCodeEditorToggle} />}
     </div>
   )
 }
