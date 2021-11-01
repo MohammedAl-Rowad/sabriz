@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { AiOutlineClose } from 'react-icons/ai'
 import ReactMarkdown from 'react-markdown'
 import { v4 } from 'uuid'
@@ -13,6 +13,10 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { schema } from './yupCodeAdderSchema'
 import clsx from 'clsx'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
+import { useMount } from 'react-use'
+import useDarkMode from '../../hooks/useDarkMode'
 
 const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
   const {
@@ -30,34 +34,50 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
   console.log(fields)
 
   const [markdown, setMarkDown] = useState(defaultVal)
-  const markDownTextAreaRef = useRef(null)
-  const titleRef = useRef(null)
   const db: RxDatabase = useStore(getDB) as RxDatabase
-  const onSave = () => {
-    if (markDownTextAreaRef.current && titleRef.current) {
-      console.log(db.collections[MAIN_COLLECTION])
-      db.collections[MAIN_COLLECTION].insert({
-        id: v4(),
-        title: (titleRef.current as any)?.value as any,
-        markdown: (markDownTextAreaRef.current as any)?.value,
-        testCases: [{ input: 'fak', output: 'fak' }],
+
+  useMount(() => {
+    db.collections[MAIN_COLLECTION].findOne(
+      '3f8cd54d-fb03-4ae4-be97-6e9caaa6afd6'
+    )
+      .exec()
+      .then((s) => {
+        console.log(s.toJSON())
       })
-        .then((s) => {
-          return db.collections[MAIN_COLLECTION].findOne(
-            '50125ddf-e412-4277-a46b-f18ea6adb06f'
-          ).exec()
-        })
-        .then(console.log)
-        .catch(console.error)
-    }
-  }
-  // console.log(errors)
-  const onSubmit = (data: any) => {
-    console.log({data})
+  })
+
+  const [enabled] = useDarkMode()
+
+  const onSubmit = async (data: any) => {
+    const [{ toast }] = await Promise.all([import('react-toastify')])
+    toast('Created!', { theme: enabled ? 'dark' : 'light' })
+    db.collections[MAIN_COLLECTION].insert({
+      id: v4(),
+      ...data,
+    })
+      .then((s) => {
+        console.log(s, s.id)
+        return db.collections[MAIN_COLLECTION].findOne(
+          '50125ddf-e412-4277-a46b-f18ea6adb06f'
+        ).exec()
+      })
+      .then(console.log)
+      .catch(console.error)
   }
 
   return (
     <div className="w-screen bg-white dark:bg-gray-900 overflow-auto pl-32 pr-32">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="flex justify-end mr-5 h-5 mb-2">
         <div
           className="sidebar-icon margin ml-0 mr-0"
@@ -66,21 +86,38 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
           <AiOutlineClose size="28" />
         </div>
       </div>
-      <h2 className="text-3xl dark:text-white">Enter Question Title</h2>
-      <section className="border-dashed border-2 border-light-blue-500 h-20 p-1">
+      <h2
+        className={clsx('text-3xl', {
+          'text-white': !!!errors?.title,
+          'text-red-600': !!errors?.title,
+        })}
+      >
+        Enter Question Title
+      </h2>
+      <section
+        className={clsx(
+          'border-dashed border-2 border-light-blue-500 h-20 p-1',
+          { 'border-red-600': !!errors?.title }
+        )}
+      >
         <input
           {...register('title')}
-          // ref={titleRef}
           type="text"
           className="w-full h-full shadow appearance-none border rounded text-5xl dark:bg-gray-900 dark:text-white"
         />
       </section>
-      <h2 className="text-3xl dark:text-white">Enter Question Text</h2>
+      <h2
+        className={clsx('text-3xl', {
+          'text-white': !!!errors?.markdown,
+          'text-red-600': !!errors?.markdown,
+        })}
+      >
+        Enter Question Text
+      </h2>
       <section className="grid grid-cols-2 gap-1">
         <section className="border-dashed border-2 border-light-blue-500  p-1">
           <textarea
             {...register('markdown')}
-            // ref={markDownTextAreaRef}
             value={markdown}
             onChange={({ target: { value } }) => {
               setMarkDown(value)
@@ -155,20 +192,24 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
           />
         </section>
       ))}
-      <button
-        onClick={() => {
-          append({ input: '', output: '' })
-        }}
-        className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-      >
-        Add Input/Output
-      </button>
-      <button
-        onClick={handleSubmit(onSubmit)}
-        className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-      >
-        Save
-      </button>
+      <section className="grid grid-cols-1 gap-1 mt-1 mb-1">
+        <button
+          onClick={() => {
+            append({ input: '', output: '' })
+          }}
+          className="w-1/4 bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+        >
+          Add Input/Output
+        </button>
+      </section>
+      <section className="grid grid-cols-1 gap-1 mt-1 mb-1">
+        <button
+          onClick={handleSubmit(onSubmit)}
+          className="w-1/4 bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+        >
+          Save
+        </button>
+      </section>
     </div>
   )
 }

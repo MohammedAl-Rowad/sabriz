@@ -22,6 +22,7 @@
     "react-markdown": "^7.1.0",
     "react-scripts": "4.0.3",
     "react-syntax-highlighter": "^15.4.4",
+    "react-toastify": "^8.0.3",
     "react-use": "^17.3.1",
     "remark-gfm": "^3.0.0",
     "rxdb": "^10.2.2",

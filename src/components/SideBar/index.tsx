@@ -2,8 +2,8 @@ import { useRef, useState } from 'react'
 import { useBoolean } from 'react-use'
 import { BsPlus, BsCodeSlash } from 'react-icons/bs'
 import clsx from 'clsx'
-import { FaFingerprint, FaPoo } from 'react-icons/fa'
-import { AiOutlineDisconnect, AiOutlineClose } from 'react-icons/ai'
+import { FaFingerprint } from 'react-icons/fa'
+import { AiOutlineDisconnect, AiOutlineClose, AiFillCode } from 'react-icons/ai'
 import { DiHtml5Connectivity } from 'react-icons/di'
 import { useStore, codeEditorFlagToggler } from '../../store'
 import SimplePeer from 'simple-peer'
@@ -138,7 +138,10 @@ const SideBar = () => {
               onClick={onCodeEditorToggle}
               text="Click here to add questions"
             />
-            <SideBarIcon icon={<FaPoo size="20" />} />
+            <SideBarIcon
+              text="Click here to see your created and saved questions"
+              icon={<AiFillCode size="20" />}
+            />
             <Divider />
             <SideBarIcon
               icon={<AiOutlineDisconnect size="22" />}
