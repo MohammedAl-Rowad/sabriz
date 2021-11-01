@@ -15,7 +15,6 @@ import { schema } from './yupCodeAdderSchema'
 import clsx from 'clsx'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
-import { useMount } from 'react-use'
 import useDarkMode from '../../hooks/useDarkMode'
 
 const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
@@ -31,20 +30,8 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
     name: 'testCases',
   })
 
-  console.log(fields)
-
   const [markdown, setMarkDown] = useState(defaultVal)
   const db: RxDatabase = useStore(getDB) as RxDatabase
-
-  useMount(() => {
-    db.collections[MAIN_COLLECTION].findOne(
-      '3f8cd54d-fb03-4ae4-be97-6e9caaa6afd6'
-    )
-      .exec()
-      .then((s) => {
-        console.log(s.toJSON())
-      })
-  })
 
   const [enabled] = useDarkMode()
 

@@ -9,17 +9,27 @@ import { useStore, codeEditorFlagToggler } from '../../store'
 import SimplePeer from 'simple-peer'
 import useDarkMode from '../../hooks/useDarkMode'
 import CodeAdder from './CodeAdder'
+import CodeQuestionList from './CodeQuestionList'
 
 const SideBar = () => {
   const [open, toggleOpen] = useBoolean(false)
+  const [codeListOpen, toggleCodeListOpen] = useBoolean(false)
   const [codeAdderOpen, toogleCodeAdderOpen] = useBoolean(false)
   const [globalPeer, setPeer] = useState(null)
   const setCodeEditorOpen = useStore(codeEditorFlagToggler)
   const textareaRef = useRef()
   const [enabled] = useDarkMode()
+
   const onCodeEditorToggle = () => {
     toogleCodeAdderOpen()
     setCodeEditorOpen(!codeAdderOpen)
+    toggleCodeListOpen(false)
+  }
+
+  const onCodeListToggle = () => {
+    toogleCodeAdderOpen(false)
+    setCodeEditorOpen(!codeListOpen)
+    toggleCodeListOpen()
   }
 
   return (
@@ -27,13 +37,13 @@ const SideBar = () => {
       className={clsx(
         'fixed top-0 left-0 h-screen flex flex-col bg-white dark:bg-gray-900 shadow-lg',
         {
-          'w-16': !open && !codeAdderOpen,
-          'w-72': open && !codeAdderOpen,
-          'w-screen': codeAdderOpen,
+          'w-16': !open && !codeAdderOpen && !codeListOpen,
+          'w-72': open && !codeAdderOpen && !codeListOpen,
+          'w-screen': codeAdderOpen || codeListOpen,
         }
       )}
     >
-      <section className={clsx({ hidden: codeAdderOpen })}>
+      <section className={clsx({ hidden: codeAdderOpen || codeListOpen })}>
         {open ? (
           <div className="p-4">
             <div className="flex justify-end">
@@ -140,6 +150,7 @@ const SideBar = () => {
             />
             <SideBarIcon
               text="Click here to see your created and saved questions"
+              onClick={onCodeListToggle}
               icon={<AiFillCode size="20" />}
             />
             <Divider />
@@ -150,6 +161,7 @@ const SideBar = () => {
           </>
         )}
       </section>
+      {codeListOpen && <CodeQuestionList onCodeListToggle={onCodeListToggle} />}
       {codeAdderOpen && <CodeAdder toogleCodeAdderOpen={onCodeEditorToggle} />}
     </div>
   )
