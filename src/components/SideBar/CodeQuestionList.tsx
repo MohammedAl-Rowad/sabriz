@@ -3,7 +3,7 @@ import { AiOutlineClose, AiFillDelete } from 'react-icons/ai'
 import { useList, useMount } from 'react-use'
 import { RxDatabase } from 'rxdb'
 import { createAvatar } from '@dicebear/avatars'
-import { MAIN_COLLECTION } from '../../constants'
+import { MAIN_COLLECTION, SIGNAL_CODE } from '../../constants'
 import { getDB, useStore } from '../../store'
 import { useDebouncedCallback } from 'use-debounce'
 import * as style from '@dicebear/avatars-identicon-sprites'
@@ -57,6 +57,14 @@ const CodeQuestionList = ({ onCodeListToggle }: CodeQuestionListInterface) => {
         })
       })
   }
+
+  const singleOtherPeerAboutQuestion = (question: any) => {
+    const event = new CustomEvent<any>(SIGNAL_CODE, {
+      detail: { question },
+    } as CustomEventInit<any>)
+    document.dispatchEvent(event)
+  }
+
   return (
     <div className="w-screen bg-white dark:bg-gray-900 overflow-auto pl-32 pr-32">
       <ToastContainer
@@ -88,7 +96,7 @@ const CodeQuestionList = ({ onCodeListToggle }: CodeQuestionListInterface) => {
         />
       </section>
       <section className="grid grid-cols-3 gap-1">
-        {questionsList?.map(({ title, id, testCases }: any) => {
+        {questionsList?.map(({ title, id, testCases, ...other }: any) => {
           return (
             <div key={id}>
               <div className="flex justify-end mr-5 h-5 mb-2">
@@ -119,7 +127,17 @@ const CodeQuestionList = ({ onCodeListToggle }: CodeQuestionListInterface) => {
                     </div>
                   </div>
                 </div>
-                <button className="w-3/6 mt-4	bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+                <button
+                  onClick={() =>
+                    singleOtherPeerAboutQuestion({
+                      ...other,
+                      id,
+                      title,
+                      testCases,
+                    })
+                  }
+                  className="w-3/6 mt-4	bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+                >
                   Send to the other peer to solve
                 </button>
               </div>

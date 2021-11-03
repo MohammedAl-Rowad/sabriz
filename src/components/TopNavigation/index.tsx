@@ -8,12 +8,15 @@ import {
 } from 'react-icons/fa'
 import { AiFillFire } from 'react-icons/ai'
 import useDarkMode from '../../hooks/useDarkMode'
+import { useStore, getMetaData } from '../../store'
 
 const TopNavigation = () => {
+  const { host, peer } = useStore(getMetaData)
+
   return (
     <div className="top-navigation">
       <HashtagIcon />
-      <Title />
+      <Title host={host} peer={peer} />
       <ThemeIcon />
       {/* <Search /> */}
       {/* <BellIcon /> */}
@@ -45,6 +48,8 @@ const Search = () => (
 const BellIcon = () => <FaRegBell size="24" className="top-navigation-icon" />
 
 const HashtagIcon = () => <FaHashtag size="20" className="title-hashtag" />
-const Title = () => <h5 className="title-text">TODO</h5>
+const Title = ({ host, peer }: any) => (
+  <h5 className="title-text text-green-500 font-extrabold">{host ? 'HOST' : peer ? 'PEER' : '🧗‍♂️'}</h5>
+)
 
 export default TopNavigation

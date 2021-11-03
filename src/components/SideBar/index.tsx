@@ -1,22 +1,30 @@
 import { useRef, useState } from 'react'
-import { useBoolean } from 'react-use'
+import { useBoolean, useMount } from 'react-use'
 import { BsPlus, BsCodeSlash } from 'react-icons/bs'
 import clsx from 'clsx'
 import { FaFingerprint } from 'react-icons/fa'
 import { AiOutlineDisconnect, AiOutlineClose, AiFillCode } from 'react-icons/ai'
 import { DiHtml5Connectivity } from 'react-icons/di'
-import { useStore, codeEditorFlagToggler } from '../../store'
+import {
+  useStore,
+  codeEditorFlagToggler,
+  setDataFromHostFun,
+  setMetaDataFunc,
+} from '../../store'
 import SimplePeer from 'simple-peer'
 import useDarkMode from '../../hooks/useDarkMode'
 import CodeAdder from './CodeAdder'
 import CodeQuestionList from './CodeQuestionList'
+import { SENDING_QUESTION, SIGNAL_CODE } from '../../constants'
 
 const SideBar = () => {
   const [open, toggleOpen] = useBoolean(false)
   const [codeListOpen, toggleCodeListOpen] = useBoolean(false)
   const [codeAdderOpen, toogleCodeAdderOpen] = useBoolean(false)
-  const [globalPeer, setPeer] = useState(null)
+  const [globalPeer, setPeer] = useState<SimplePeer.Instance | null>(null)
   const setCodeEditorOpen = useStore(codeEditorFlagToggler)
+  const setDataFromHost = useStore(setDataFromHostFun)
+  const setMetaData = useStore(setMetaDataFunc)
   const textareaRef = useRef()
   const [enabled] = useDarkMode()
 
@@ -67,6 +75,7 @@ const SideBar = () => {
               <div
                 className="sidebar-icon margin ml-0 mr-0"
                 onClick={() => {
+                  setMetaData({ peer: true })
                   const offer = (textareaRef.current as any)?.value as string
 
                   const peer = globalPeer
@@ -88,14 +97,24 @@ const SideBar = () => {
 
                     peer.on('connect', () => {
                       console.log('CONNECT')
-                      setInterval(() => {
-                        peer.send('whatever' + Math.random())
-                        // peer.emit('DATA_FROM_PEER', 'whatever' + Math.random())
-                      }, 1000)
+                      // setInterval(() => {
+                      // peer.send('whatever' + Math.random())
+                      // peer.emit('DATA_FROM_PEER', 'whatever' + Math.random())
+                      // }, 1000)
                     })
 
+                    // document.addEventListener(
+                    //   SIGNAL_CODE,
+                    //   ({ detail }: CustomEventInit<any>) => {
+                    //     peer.send(JSON.stringify(detail))
+                    //     console.log(detail)
+                    //   }
+                    // )
                     peer.on('data', (data) => {
-                      console.log('data: ' + data)
+                      try {
+                        const parsedData = JSON.parse(data)
+                        setDataFromHost(parsedData)
+                      } catch {}
                     })
                   }
                 }}
@@ -109,6 +128,7 @@ const SideBar = () => {
             <SideBarIcon
               icon={<FaFingerprint size="28" />}
               onClick={async () => {
+                setMetaData({ host: true })
                 const peer = new SimplePeer({
                   // channelName: id,
                   initiator: true,
@@ -125,11 +145,23 @@ const SideBar = () => {
 
                 peer.on('connect', () => {
                   console.log('CONNECT')
-                  setInterval(() => {
-                    // peer.emit('DATA_FROM_HOST', '1')
-                    peer.send(`1`)
-                  }, 1000)
+                  // setInterval(() => {
+                  // peer.emit('DATA_FROM_HOST', '1')
+                  // peer.send(`1`)
+                  // }, 1000)
                 })
+
+                document.addEventListener(
+                  SIGNAL_CODE,
+                  ({ detail }: CustomEventInit<any>) => {
+                    peer.send(
+                      JSON.stringify({
+                        question: detail.question,
+                        type: SENDING_QUESTION,
+                      })
+                    )
+                  }
+                )
 
                 peer.on('data', (data) => {
                   console.log('data: ' + data)
