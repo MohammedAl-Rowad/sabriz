@@ -8,9 +8,17 @@ import 'tailwindcss/dist/utilities.css'
 import { init } from './database'
 import { MAIN_COLLECTION_SCHEMA } from './database/schema'
 import { RxDatabase } from 'rxdb'
+import { Resizable } from 're-resizable'
 import { useStore, storeDB } from './store'
 import { MAIN_COLLECTION } from './constants'
 
+export const style = {
+  display: 'flex',
+  // alignItems: 'center',
+  // justifyContent: 'center',
+  // border: 'solid 1px #ddd',
+  // background: '#f0f0f0',
+}
 const App = () => {
   const setDB = useStore(storeDB)
 
@@ -30,8 +38,22 @@ const App = () => {
   return (
     <div className="flex">
       <SideBar />
-      <Channelbar />
-      <ContentContainer />
+      <div className="w-full flex overflow-hidden">
+        <Resizable
+          style={style}
+          defaultSize={{
+            width: '50%',
+            height: '100vh',
+          }}
+          maxWidth="90%"
+          minWidth="20%"
+        >
+          <Channelbar />
+        </Resizable>
+        <div style={{ minWidth: 20 }} className="w-full">
+          <ContentContainer />
+        </div>
+      </div>
     </div>
   )
 }

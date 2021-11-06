@@ -105,7 +105,7 @@ const CodeAdder = ({ toogleCodeAdderOpen }: any) => {
             onChange={({ target: { value } }) => {
               setMarkDown(value)
             }}
-            className="w-full h-full shadow appearance-none border rounded dark:bg-gray-900 dark:text-white"
+            className="p-1 w-full h-full shadow appearance-none border rounded dark:bg-gray-900 dark:text-white border-green-500"
           />
         </section>
         <section className="border-dashed border-2 border-light-blue-500 p-1 overflow-auto">

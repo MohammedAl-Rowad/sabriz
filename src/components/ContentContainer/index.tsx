@@ -1,40 +1,30 @@
 import TopNavigation from '../TopNavigation'
-import { BsPlusCircleFill } from 'react-icons/bs'
-import clsx from 'clsx'
-import { useStore, codeEditorIsOpen, dataFromHost } from '../../store'
-import MarkDown from '../common/MarkDown'
+import 'codemirror/lib/codemirror.css'
+import { useMount } from 'react-use'
+import 'codemirror/theme/material-ocean.css'
+import 'codemirror/mode/javascript/javascript'
+import 'codemirror/keymap/sublime'
+import CodeMirror from 'codemirror'
 
 const ContentContainer = () => {
-  const codeEditorOpen = useStore(codeEditorIsOpen)
-  const allDataFromHost = useStore(dataFromHost)
-  const markDown = allDataFromHost?.question?.markdown
+  useMount(() => {
+    const editor = CodeMirror.fromTextArea(
+      document.getElementById('code-editor') as HTMLTextAreaElement,
+      {
+        lineNumbers: true,
+        keyMap: 'sublime',
+        theme: 'material-ocean',
+        mode: 'javascript',
+      }
+    )
+  })
 
   return (
-    <div className="content-container">
+    <div className="content-container h-screen w-full overflow-auto">
       <TopNavigation />
-      <MarkDown markdown={markDown} />
-      <div className={clsx({ 'h-screen': !codeEditorOpen })} />
-      {/* <BottomBar /> */}
+      <textarea id="code-editor" />
     </div>
   )
 }
-
-const BottomBar = () => (
-  <div className="bottom-bar">
-    <PlusIcon />
-    <input
-      type="text"
-      placeholder="Enter message..."
-      className="bottom-bar-input"
-    />
-  </div>
-)
-
-const PlusIcon = () => (
-  <BsPlusCircleFill
-    size="22"
-    className="text-green-500 dark:shadow-lg mx-2 dark:text-primary"
-  />
-)
 
 export default ContentContainer

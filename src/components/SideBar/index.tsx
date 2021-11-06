@@ -43,7 +43,7 @@ const SideBar = () => {
   return (
     <div
       className={clsx(
-        'fixed top-0 left-0 h-screen flex flex-col bg-white dark:bg-gray-900 shadow-lg',
+        'fixed top-0 left-0 h-screen flex flex-col bg-white dark:bg-gray-900 shadow-lg z-10',
         {
           'w-16': !open && !codeAdderOpen && !codeListOpen,
           'w-72': open && !codeAdderOpen && !codeListOpen,
