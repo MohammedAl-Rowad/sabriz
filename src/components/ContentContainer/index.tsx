@@ -27,11 +27,12 @@ const ContentContainer = () => {
 
     setEditor(editor)
   })
-
+  // [1,2,3,4]@3@21
   const runCode = () => {
     const code = editor?.getValue()
     if (code) {
       ;(document.getElementById('rowadz') as HTMLElement).innerHTML = code
+      // ;(document.getElementById('rowadz') as HTMLElement).append('\nsoul(list_=[1,2,3,4], target=2)')
       // comes from cdn
       brython()
       // eval(code)
@@ -50,7 +51,7 @@ const ContentContainer = () => {
           className="form-radio text-green-500"
           name="radio"
           value="python"
-          checked
+          defaultChecked
         />
         <span className="ml-2">Python</span>
       </label>
