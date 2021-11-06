@@ -7,14 +7,29 @@ const defaultVal = `# Title
 ## Overview
 
 * link to the creator github profile [here](https://github.com/MohammedAl-Rowad)
-* Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
 
 ## Syntax highlighting
 
 \`\`\`js
 const myFunc = (...args) => {
+  alert(3)
   return {name: 'rowadz', age: 23}
 }
+\`\`\`
+
+## Code to start with
+
+\`\`\`py
+from collections import Counter, defaultdict
+from browser import alert
+
+def soul(*args):
+  alert('u can alert here')
+  c = Counter(args)
+  d = defaultdict(lambda: ['name01', 'name02'])
+  print(c, d['names'])
+  
+soul('d', 'c', 'a', 'a', 'a', 'w', 'c')
 \`\`\`
 `
 

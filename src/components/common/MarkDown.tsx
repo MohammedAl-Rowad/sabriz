@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm'
 const MarkDown = ({ markdown }: { markdown: string }) => {
   return (
     <ReactMarkdown
-      className="dark:bg-gray-500 dark:text-white max-h-screen w-full"
+      className="dark:text-white max-h-screen w-full"
       children={markdown}
       remarkPlugins={[remarkGfm]}
       components={{

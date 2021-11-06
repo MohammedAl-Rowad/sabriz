@@ -235,7 +235,8 @@
 }
 
 
-.CodeMirror * {
+.CodeMirror {
     font-family: Arial, monospace;
-    font-size: 30px;
+    font-size: 20px;
+    @apply h-full !important;
 }
