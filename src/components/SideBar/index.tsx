@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useBoolean, useMount } from 'react-use'
+import { useBoolean } from 'react-use'
 import { BsPlus, BsCodeSlash } from 'react-icons/bs'
 import clsx from 'clsx'
 import { FaFingerprint } from 'react-icons/fa'

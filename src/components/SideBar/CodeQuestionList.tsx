@@ -25,7 +25,7 @@ const CodeQuestionList = ({ onCodeListToggle }: CodeQuestionListInterface) => {
       .exec()
       .then((documents) => documents.map((doc) => doc.toJSON()))
       .then((list) => set(list))
-  }, [])
+  }, [db.collections, set])
   const filterQuestionsDebounced = useDebouncedCallback(
     ({ target: { value } }) => {
       if (!value) {
@@ -116,7 +116,7 @@ const CodeQuestionList = ({ onCodeListToggle }: CodeQuestionListInterface) => {
                       dataUri: true,
                       // ... and other options
                     })}
-                    alt="random generated image based on the question title"
+                    alt={title}
                   />
                 </div>
                 <div className="text-center">

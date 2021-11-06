@@ -1,4 +1,4 @@
-export default `# Title
+const defaultVal = `# Title
 
 👉 Changes are re-rendered as you type.
 
@@ -17,3 +17,5 @@ const myFunc = (...args) => {
 }
 \`\`\`
 `
+
+export default defaultVal

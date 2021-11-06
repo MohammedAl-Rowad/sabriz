@@ -8,7 +8,7 @@ import CodeMirror from 'codemirror'
 
 const ContentContainer = () => {
   useMount(() => {
-    const editor = CodeMirror.fromTextArea(
+    CodeMirror.fromTextArea(
       document.getElementById('code-editor') as HTMLTextAreaElement,
       {
         lineNumbers: true,
