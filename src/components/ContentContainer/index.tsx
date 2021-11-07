@@ -6,7 +6,6 @@ import 'codemirror/theme/nord.css'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/mode/python/python'
 import 'codemirror/keymap/sublime'
-import '@codemirror/autocomplete'
 import CodeMirror, { EditorFromTextArea } from 'codemirror'
 
 declare var brython: () => void
