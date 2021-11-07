@@ -41,13 +41,13 @@ const ContentContainer = () => {
       // console.log({ testCases, code })
       const mode: MODE = editor?.getMode() as MODE
       const answers: boolean[] = []
-      const testCasez: any = [
-        { input: '1', output: '1' },
-        { input: '1', output: '1' },
-        { input: '1', output: '1' },
-        { input: '1', output: '1' },
-      ]
-      testCasez?.forEach(({ input, output }: any, index: number) => {
+      // const testCasez: any = [
+      //   { input: '1', output: '1' },
+      //   { input: '1', output: '1' },
+      //   { input: '1', output: '1' },
+      //   { input: '1', output: '1' },
+      // ]
+      testCases?.forEach(({ input, output }: any, index: number) => {
         const args = input?.split('@').join(',')
         const invoke = `soul(${args})`
 
