@@ -47,39 +47,61 @@ const ContentContainer = () => {
       //   { input: '1', output: '1' },
       //   { input: '1', output: '1' },
       // ]
-      testCases?.forEach(({ input, output }: any, index: number) => {
-        const args = input?.split('@').join(',')
-        const invoke = `soul(${args})`
+      if (testCases?.length) {
+        testCases?.forEach(({ input, output }: any, index: number) => {
+          const args = input?.split('@').join(',')
+          const invoke = `soul(${args})`
 
-        if (mode.name === 'javascript') {
-          const codeToRun = `\n ${code}; \n ${invoke}`
-          const res = eval(codeToRun)
-          if (isNaN(+res) ? +res === output : res === output) {
-            answers.push(true)
+          if (mode.name === 'javascript') {
+            const codeToRun = `\n ${code}; \n ${invoke}`
+            const res = eval(codeToRun)
+            if (isNaN(+res) ? +res === output : res === output) {
+              answers.push(true)
+            } else {
+              answers.push(false)
+            }
           } else {
-            answers.push(false)
+            // KING OF HABED!
+            ;(document.getElementById('rowadz') as HTMLElement).innerHTML = ''
+            ;(document.getElementById('rowadz') as HTMLElement).append(
+              'from browser import document, alert'
+            )
+            ;(document.getElementById('rowadz') as HTMLElement).append(
+              `\n${code}`
+            )
+            ;(document.getElementById('rowadz') as HTMLElement).append(
+              `\nanswerz = ${invoke}\nel = document.createElement('input')\nel.className = 'hidden answerz'\nel.setAttribute('value', answerz)\ndocument['bodyz'].appendChild(el)`
+            )
+            brython()
+            const input = document.querySelectorAll('.answerz')[index]
+            const res = input?.getAttribute('value') as string
+            if (isNaN(+res) ? +res === output : res === output) {
+              answers.push(true)
+            } else {
+              answers.push(false)
+            }
           }
+        })
+        const event = new CustomEvent<any>(STATUS, {
+          detail: { completed: answers.every((bool) => bool) },
+        } as CustomEventInit<any>)
+        document.dispatchEvent(event)
+        document.querySelectorAll('.answerz').forEach((el) => el.remove())
+      } else {
+        if (mode.name === 'javascript') {
+          const codeToRun = `\n ${code};`
+          eval(codeToRun)
         } else {
-          // KING OF HABED!
-          ;(document.getElementById('rowadz') as HTMLElement).innerHTML = code
+          ;(document.getElementById('rowadz') as HTMLElement).innerHTML = ''
           ;(document.getElementById('rowadz') as HTMLElement).append(
-            `\nfrom browser import document\nanswerz = ${invoke}\nel = document.createElement('input')\nel.className = 'hidden answerz'\nel.setAttribute('value', answerz)\ndocument['bodyz'].appendChild(el)`
+            '\nfrom browser import document, alert'
+          )
+          ;(document.getElementById('rowadz') as HTMLElement).append(
+            `\n${code}`
           )
           brython()
-          const input = document.querySelectorAll('.answerz')[index]
-          const res = input?.getAttribute('value') as string
-          if (isNaN(+res) ? +res === output : res === output) {
-            answers.push(true)
-          } else {
-            answers.push(false)
-          }
         }
-      })
-      const event = new CustomEvent<any>(STATUS, {
-        detail: { completed: answers.every((bool) => bool) },
-      } as CustomEventInit<any>)
-      document.dispatchEvent(event)
-      document.querySelectorAll('.answerz').forEach((el) => el.remove())
+      }
     }
   }
 
