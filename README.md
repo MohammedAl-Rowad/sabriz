@@ -1,6 +1,6 @@
 # Sabriz
 
-<img src="thumb.png" />
+<img src="ROWAD_LABZ_003.png" />
 
 
 Real time peer to peer code execution with [webrtc](https://webrtc.org/) and [react](https://reactjs.org/)
