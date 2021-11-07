@@ -15,7 +15,8 @@ import SimplePeer from 'simple-peer'
 import useDarkMode from '../../hooks/useDarkMode'
 import CodeAdder from './CodeAdder'
 import CodeQuestionList from './CodeQuestionList'
-import { SENDING_QUESTION, SIGNAL_CODE } from '../../constants'
+import { SENDING_QUESTION, SIGNAL_CODE, STATUS } from '../../constants'
+import { ToastContainer } from 'react-toastify'
 
 const SideBar = () => {
   const [open, toggleOpen] = useBoolean(false)
@@ -103,13 +104,12 @@ const SideBar = () => {
                       // }, 1000)
                     })
 
-                    // document.addEventListener(
-                    //   SIGNAL_CODE,
-                    //   ({ detail }: CustomEventInit<any>) => {
-                    //     peer.send(JSON.stringify(detail))
-                    //     console.log(detail)
-                    //   }
-                    // )
+                    document.addEventListener(
+                      STATUS,
+                      ({ detail }: CustomEventInit<any>) => {
+                        peer.send(JSON.stringify(detail))
+                      }
+                    )
                     peer.on('data', (data) => {
                       try {
                         const parsedData = JSON.parse(data)
@@ -163,7 +163,21 @@ const SideBar = () => {
                   }
                 )
 
-                peer.on('data', (data) => {
+                peer.on('data', async (data) => {
+                  try {
+                    const parsedData = JSON.parse(data)
+                    const [{ toast }] = await Promise.all([
+                      import('react-toastify'),
+                    ])
+                    const type = parsedData.completed ? 'success' : 'error'
+                    toast[type](
+                      parsedData.completed
+                        ? 'All test cases passed'
+                        : 'Some tests did not pass',
+                      { theme: enabled ? 'dark' : 'light' }
+                    )
+                  } catch {}
+
                   console.log('data: ' + data)
                 })
               }}
@@ -195,6 +209,17 @@ const SideBar = () => {
       </section>
       {codeListOpen && <CodeQuestionList onCodeListToggle={onCodeListToggle} />}
       {codeAdderOpen && <CodeAdder toogleCodeAdderOpen={onCodeEditorToggle} />}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   )
 }
