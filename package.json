@@ -2,6 +2,7 @@
   "name": "sabriz",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mohammedal-rowad.github.io/sabriz/",
   "dependencies": {
     "@craco/craco": "^6.3.0",
     "@dicebear/avatars": "^4.10.0",
