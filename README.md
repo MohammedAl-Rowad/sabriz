@@ -1,6 +1,6 @@
 # Sabriz
 
-<img src="https://emojis.slackmojis.com/emojis/images/1517898183/3499/hidethepain.png?1517898183" />
+<img src="thumb.png" />
 
 
 Real time peer to peer code execution with [webrtc](https://webrtc.org/) and [react](https://reactjs.org/)
